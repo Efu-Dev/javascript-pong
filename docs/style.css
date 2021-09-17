@@ -1,11 +1,22 @@
-body,html {
-    margin: 0;
-    padding: 0;
-    max-height: 100vh;
-}
-
 *{
     box-sizing: border-box;
+}
+
+body,html {
+    background: black;
+    margin: 0;
+    padding: 0;
+    max-height: 99vh;
+}
+
+button{
+    background-color:gray;
+    border: none;
+    height: 5vh;
+}
+
+button:hover{
+    background-color: darkgrey;
 }
 
 script{
@@ -16,5 +27,16 @@ script{
 #main{
     background-color: black;
     width: 100%;
-    height: 100vh
+    max-height: 94vh;
+}
+
+#bar{
+    background-color: white;
+    color: black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    width: 100%;
+    height: 5vh;
 }

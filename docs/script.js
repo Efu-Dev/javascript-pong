@@ -1,10 +1,13 @@
 const canvas = document.getElementById("main");
 const context = canvas.getContext("2d");
+let gameMode = 1;
+let keys = {w: false, s: false, ArrowUp: false, ArrowDown: false};
 context.fillStyle = "white";
+window.onload = () => {setInterval(play, 1000/fps);};
 
 const fps = 61;
-const p1 = {id: 1, x: 2, y: 1, score: 0, w: 5, h: 30};
-const p2 = {id: 2, x: canvas.width-7, y: 80, score: 0, w: 5, h: 30, speed: 0.8};
+const p1 = {id: 1, x: 2, y: 0, score: 0, w: 5, h: 30};
+const p2 = {id: 2, x: canvas.width-7, y: canvas.height-30, score: 0, w: 5, h: 30, speed: 0.8};
 const ball = {x: 150, y: 63, r: 2, speed: 1, velX: 1, velY: 1};
 const net = {x: canvas.width/2 - 1, y: 0, w: 1, h: 10};
 //rendering functions
@@ -83,7 +86,7 @@ function update(){
         ball.speed += 0.1;
     }
 
-    if(player === p2){
+    if(gameMode === 1 && player === p2){
         if(p2.y + p2.h/2 < ball.y && p2.y + p2.h < canvas.height)
             p2.y += p2.speed;
         else if(p2.y + p2.h/2 > ball.y && p2.y > 0)
@@ -108,12 +111,45 @@ function play(){
     renderGame();
 }
 
-document.addEventListener('keydown', (event) => {
-    if(event.key === "ArrowDown" && p1.y + p1.h < canvas.height)
-        p1.y += 1.8;
-    else if(event.key === "ArrowUp" && p1.y > 0)
-        p1.y -= 1.8;
-  },
-  false);
+function reset(){
+    p1.y = 0;
+    p1.score = 0;
+    p2.y = canvas.height-p2.h;
+    p2.score = 0;
+    resetBall();
+}
 
-setInterval(play, 1000/fps); //Will call play() 60 times per second.
+document.addEventListener('keydown', (event) => {
+    keys[event.key] = true;
+    movePlayer();
+}, false);
+
+function movePlayer() {
+
+    if(keys["s"] && p1.y + p1.h < canvas.height)
+        p1.y += 1.8;
+    else if(keys["w"] && p1.y > 0)
+        p1.y -= 1.8;
+
+    if(gameMode === 2){
+        if(keys["ArrowDown"] && p2.y + p2.h < canvas.height)
+            p2.y += 1.8;
+        else if(keys["ArrowUp"] && p2.y > 0)
+            p2.y -= 1.8;
+    }
+}
+ 
+ document.addEventListener('keyup', function(event) {
+     console.log(event.key + " RELEASED");
+     keys[event.key] = false;
+ }, false);
+
+  document.getElementById("reset").onclick = () =>{reset()};
+
+  document.getElementById("change-mode").onclick = () => {
+    gameMode = gameMode === 1 ? 2 : 1;
+    document.getElementById("current-mode").innerText = gameMode === 1 ? "Current Mode: 1 Player"
+                                                       : "Current Mode: 2 Players";
+    reset();
+  };
+
